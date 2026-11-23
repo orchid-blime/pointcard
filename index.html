@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ごほうびポイント</title>
 <meta name="description" content="やったことでポイントを貯めて、ごほうびと交換するポイントカード">
-<meta name="theme-color" content="#2C7A57">
+<meta name="theme-color" content="#F2F1EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101412" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -14,120 +15,164 @@
 <meta name="apple-mobile-web-app-title" content="ごほうびpt">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Maru+Gothic:wght@700;900&display=swap">
 <style>
+/* 見た目の基本設定（色・文字） */
 :root{
-  --bg:#F1F4F1; --surface:#FFFFFF; --fg:#1D2A23; --muted:#5E6E65; --line:#D7DFDA;
-  --accent:#2C7A57; --accent-fg:#FFFFFF; --soft:#E1EEE7;
-  --gold:#C8901A; --gold-soft:#F7EBCF; --danger:#B4412F;
-  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Noto Sans JP",system-ui,sans-serif;
-  --f-body:"Noto Sans JP","Hiragino Sans",system-ui,sans-serif;
+  --bg:#F2F1EC; --surface:#FFFFFF; --surface-2:#F7F6F2; --fg:#1B2420; --muted:#6B746F; --line:#E2E0D8;
+  --accent:#1F6B4C; --accent-2:#2E8A63; --accent-fg:#FFFFFF; --soft:#E3EFE8;
+  --gold:#B7801A; --gold-soft:#F6ECD6; --danger:#B4412F;
+  --card-1:#1D5E44; --card-2:#2F8A62; --card-fg:#FFFFFF; --card-ink:rgba(255,255,255,.22);
+  --shadow:0 1px 2px rgba(27,36,32,.05),0 4px 14px rgba(27,36,32,.06);
+  --num:"Nunito","Zen Maru Gothic",system-ui,sans-serif;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN",system-ui,sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){:root{
-  --bg:#111713; --surface:#1A221D; --fg:#E4EDE7; --muted:#9AAAA1; --line:#2C3832;
-  --accent:#5BBE8F; --accent-fg:#0E1A13; --soft:#1F3328;
-  --gold:#E6B64B; --gold-soft:#3A3020; --danger:#E27A66; color-scheme:dark}}
+  --bg:#101412; --surface:#191F1C; --surface-2:#141916; --fg:#E7EDE9; --muted:#97A39C; --line:#28302C;
+  --accent:#6FD0A0; --accent-2:#4FB384; --accent-fg:#0C1A13; --soft:#1C2E25;
+  --gold:#E8B957; --gold-soft:#332A19; --danger:#EC8571;
+  --card-1:#173F2F; --card-2:#245E45; --card-fg:#F1F7F3; --card-ink:rgba(255,255,255,.16);
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+  color-scheme:dark}}
+
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.6;
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.65;font-feature-settings:"palt";
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  padding-top:calc(20px + env(safe-area-inset-top,0px));padding-bottom:calc(48px + env(safe-area-inset-bottom,0px));
+  padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:calc(96px + env(safe-area-inset-bottom,0px));
   -webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
-.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.wrap{max-width:500px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
-button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.num{font-variant-numeric:tabular-nums}
+button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-family:var(--num);font-variant-numeric:tabular-nums}
 
-.card{background:var(--accent);color:var(--accent-fg);border-radius:20px;padding:20px 22px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
-.card::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;border:14px solid currentColor;opacity:.08}
-.card-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.card-label{font-size:12px;letter-spacing:.12em;opacity:.85}
-.bal{font-family:var(--f-display);font-weight:900;font-size:56px;line-height:1}
-.bal small{font-size:18px;font-weight:700;margin-left:4px}
-.next{font-size:13px;opacity:.92}
-.stamps{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
-.stamp{aspect-ratio:1;border-radius:50%;border:2px dashed currentColor;opacity:.4;max-width:100%}
-.stamp.on{border-style:solid;background:var(--accent-fg);opacity:1}
+/* ヘッダー */
+.top{display:flex;justify-content:space-between;align-items:baseline;padding-inline:2px}
+.top h1{font-family:var(--f-display);font-weight:900;font-size:20px;margin:0;letter-spacing:.02em}
+.top .date{font-size:13px;color:var(--muted)}
 
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px}
-.tabs button{padding:9px 4px;border-radius:10px;font-weight:700;color:var(--muted)}
-.tabs button[aria-selected="true"]{background:var(--soft);color:var(--fg)}
+/* ポイントカード */
+.card{position:relative;overflow:hidden;border-radius:22px;padding:20px 22px 18px;color:var(--card-fg);
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,255,255,.14) 0 30%,transparent 30.5%),
+    repeating-linear-gradient(135deg,transparent 0 14px,rgba(255,255,255,.035) 14px 15px),
+    linear-gradient(150deg,var(--card-2),var(--card-1));
+  box-shadow:0 10px 30px -12px rgba(20,70,50,.55);display:flex;flex-direction:column;gap:16px}
+.card-head{display:flex;justify-content:space-between;align-items:center}
+.eyebrow{font-family:var(--num);font-weight:800;font-size:11px;letter-spacing:.22em;opacity:.8}
+.today{font-size:12px;font-weight:700;background:rgba(255,255,255,.16);padding:3px 10px;border-radius:999px}
+.bal-row{display:flex;align-items:baseline;gap:6px}
+.bal{font-family:var(--num);font-weight:900;font-size:64px;line-height:.95;letter-spacing:-.02em}
+.bal-unit{font-family:var(--num);font-weight:800;font-size:20px;opacity:.85}
+.stamps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-width:310px}
+.stamp{aspect-ratio:1;border-radius:50%;border:1.5px dashed var(--card-ink);display:grid;place-items:center;max-width:100%}
+.stamp svg{width:58%;height:58%;opacity:0}
+.stamp.on{border:2px solid rgba(255,255,255,.9);background:rgba(255,255,255,.14)}
+.stamp.on svg{opacity:1;fill:#fff}
+.stamp.pop{animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{0%{transform:scale(.4) rotate(-20deg)}100%{transform:scale(1) rotate(0)}}
+.next{font-size:13px;display:flex;gap:6px;align-items:center;border-top:1px solid var(--card-ink);padding-top:12px}
+.next b{font-family:var(--num);font-weight:900;font-size:15px}
 
-section{display:flex;flex-direction:column;gap:10px}
-.sec-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.sec-head h2{font-family:var(--f-display);font-size:18px;margin:0}
-.link{color:var(--accent);font-weight:700;font-size:13px;padding:4px 2px}
-.hint{color:var(--muted);font-size:13px;margin:0}
+/* セクション */
+section{display:flex;flex-direction:column;gap:12px}
+.sec-head{display:flex;justify-content:space-between;align-items:center;gap:8px;padding-inline:2px}
+.sec-head h2{font-family:var(--f-display);font-weight:900;font-size:17px;margin:0}
+.link{color:var(--accent);font-weight:700;font-size:13px;padding:6px 10px;border-radius:999px;background:var(--soft)}
+.hint{color:var(--muted);font-size:13px;margin:0;padding-inline:2px}
 
-.list{display:flex;flex-direction:column;gap:8px}
-.row{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px}
+.list{display:flex;flex-direction:column;background:var(--surface);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:13px 16px;min-height:60px}
+.row + .row{border-top:1px solid var(--line)}
 .row .main{flex:1;min-width:0}
 .row .name{font-weight:500;overflow-wrap:anywhere}
 .row .sub{font-size:12px;color:var(--muted)}
-.pill{font-family:var(--f-display);font-weight:900;white-space:nowrap}
-.earn-btn{background:var(--soft);color:var(--accent);border-radius:999px;padding:8px 14px;font-family:var(--f-display);font-weight:900;white-space:nowrap;transition:transform .12s}
-.earn-btn:active{transform:scale(.94)}
-.del{color:var(--danger);font-size:13px;font-weight:700;padding:6px 8px;border-radius:8px}
+.ex{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 4px;margin-right:6px;vertical-align:1px}
 
-.reward .bar{height:6px;border-radius:3px;background:var(--line);margin-top:6px;overflow:hidden}
-.reward .bar i{display:block;height:100%;background:var(--gold);border-radius:3px}
-.buy{border-radius:999px;padding:8px 14px;font-weight:700;white-space:nowrap;background:var(--gold-soft);color:var(--gold)}
-.buy[disabled]{opacity:.45;cursor:default}
-.buy.confirm{background:var(--gold);color:var(--bg)}
+.earn-btn{display:inline-flex;align-items:baseline;gap:1px;min-width:72px;justify-content:center;background:var(--accent);color:var(--accent-fg);border-radius:999px;padding:7px 14px;font-family:var(--num);font-weight:900;font-size:16px;white-space:nowrap;transition:transform .12s,filter .12s}
+.earn-btn small{font-size:11px;font-weight:800;opacity:.85}
+.earn-btn:hover{filter:brightness(1.08)}
+.earn-btn:active{transform:scale(.92)}
+.del{color:var(--danger);font-size:13px;font-weight:700;padding:6px 10px;border-radius:999px;background:transparent;border:1px solid currentColor}
+
+.reward .bar{height:5px;border-radius:3px;background:var(--line);margin-top:7px;overflow:hidden}
+.reward .bar i{display:block;height:100%;background:var(--gold);border-radius:3px;transition:width .4s}
+.reward.ready .bar i{background:var(--accent-2)}
+.buy{border-radius:999px;padding:7px 14px;font-weight:700;font-size:14px;white-space:nowrap;background:var(--accent);color:var(--accent-fg)}
+.buy[disabled]{background:var(--surface-2);color:var(--muted);border:1px solid var(--line);cursor:default}
+.buy.confirm{background:var(--gold);color:#fff}
 .cancel{font-size:13px;color:var(--muted);padding:6px}
 
-form.add{display:flex;flex-wrap:wrap;gap:8px;background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:12px}
-form.add input{font:inherit;font-size:16px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px;min-width:0}
+form.add{display:flex;flex-wrap:wrap;gap:8px;background:var(--surface-2);border:1.5px dashed var(--line);border-radius:18px;padding:12px}
+form.add input{font:inherit;font-size:16px;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:9px 12px;min-width:0}
 form.add .n{flex:1 1 160px}
-form.add .p{flex:0 0 90px}
-.primary{background:var(--accent);color:var(--accent-fg);border-radius:10px;padding:9px 16px;font-weight:700}
-.ghost{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 14px;font-weight:700}
+form.add .p{flex:0 0 84px;font-family:var(--num);font-weight:800}
+.primary{background:var(--fg);color:var(--bg);border-radius:12px;padding:9px 16px;font-weight:700}
+.ghost{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:9px 14px;font-weight:700}
 
+.pill{font-family:var(--num);font-weight:900;font-size:16px;white-space:nowrap}
 .plus{color:var(--accent)} .minus{color:var(--gold)}
-.day{font-size:12px;color:var(--muted);letter-spacing:.06em;margin-top:6px}
-.empty{text-align:center;color:var(--muted);font-size:13px;padding:18px;border:1px dashed var(--line);border-radius:14px}
+.day{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em;padding:14px 4px 6px}
+.day:first-child{padding-top:0}
+.loggroup{display:flex;flex-direction:column}
+.empty{text-align:center;color:var(--muted);font-size:13px;padding:22px 16px}
 
-details.backup{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:8px}
+details.backup{background:var(--surface);border-radius:18px;box-shadow:var(--shadow);padding:14px 16px;margin-top:6px}
 details.backup summary{font-weight:700;cursor:pointer}
 details.backup .inner{display:flex;flex-direction:column;gap:10px;margin-top:10px}
-details.backup textarea{font:12px/1.4 ui-monospace,Menlo,monospace;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px;min-height:90px;width:100%;resize:vertical}
+details.backup textarea{font:12px/1.4 ui-monospace,Menlo,monospace;color:var(--fg);background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:8px;min-height:90px;width:100%;resize:vertical}
 .btns{display:flex;flex-wrap:wrap;gap:8px}
 
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100% - 32px);text-align:center}
+/* 下のタブバー */
+nav.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:color-mix(in srgb,var(--surface) 88%,transparent);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+nav.tabbar .in{max-width:500px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+nav.tabbar button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 0 8px;font-size:11px;font-weight:700;color:var(--muted)}
+nav.tabbar svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+nav.tabbar button[aria-selected="true"]{color:var(--accent)}
+
+/* 獲得時の演出 */
+.float{position:fixed;z-index:20;pointer-events:none;font-family:var(--num);font-weight:900;font-size:20px;color:var(--accent);animation:float .8s ease-out forwards}
+@keyframes float{0%{opacity:0;transform:translate(-50%,0) scale(.8)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-48px) scale(1.1)}}
+.bump{animation:bump .35s ease}
+@keyframes bump{40%{transform:scale(1.06)}}
+
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:10;background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100% - 32px);text-align:center}
 .toast.show{opacity:1}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="star" viewBox="0 0 24 24"><path d="M12 2.6l2.75 5.95 6.5.73-4.85 4.42 1.33 6.4L12 16.9l-5.73 3.2 1.33-6.4L2.75 9.28l6.5-.73z"/></symbol>
+</svg>
 <div class="wrap">
-  <div class="card" aria-live="polite">
-    <div class="card-top"><span class="card-label">いまのポイント</span><span class="card-label" id="earnedToday"></span></div>
-    <div class="bal num" id="bal">0<small>pt</small></div>
+  <header class="top"><h1>ごほうびポイント</h1><span class="date" id="date"></span></header>
+
+  <div class="card" id="card" aria-live="polite">
+    <div class="card-head"><span class="eyebrow">POINT CARD</span><span class="today num" id="earnedToday" hidden></span></div>
+    <div class="bal-row"><span class="bal num" id="bal">0</span><span class="bal-unit">pt</span></div>
     <div class="stamps" id="stamps" aria-hidden="true"></div>
     <div class="next" id="next"></div>
   </div>
 
-  <div class="tabs" role="tablist">
-    <button role="tab" aria-selected="true" data-v="earn">ためる</button>
-    <button role="tab" aria-selected="false" data-v="use">つかう</button>
-    <button role="tab" aria-selected="false" data-v="log">りれき</button>
-  </div>
-
   <section id="v-earn">
     <div class="sec-head"><h2>やったことを記録</h2><button class="link" id="edit-earn">編集</button></div>
-    <p class="hint">タップするとポイントが入ります。</p>
     <div class="list" id="tasks"></div>
     <form class="add" id="add-task" hidden>
       <input class="n" id="task-name" placeholder="例: 筋トレした" maxlength="40" required>
-      <input class="p num" id="task-pts" type="number" inputmode="numeric" min="1" max="9999" placeholder="pt" required>
+      <input class="p" id="task-pts" type="number" inputmode="numeric" min="1" max="9999" placeholder="pt" required>
       <button class="primary" type="submit">追加</button>
     </form>
     <form class="add" id="add-oneoff">
-      <input class="n" id="one-name" placeholder="その他（内容）" maxlength="40" required>
-      <input class="p num" id="one-pts" type="number" inputmode="numeric" min="1" max="9999" placeholder="pt" required>
-      <button class="primary" type="submit">+ 記録</button>
+      <input class="n" id="one-name" placeholder="その他にやったこと" maxlength="40" required>
+      <input class="p" id="one-pts" type="number" inputmode="numeric" min="1" max="9999" placeholder="pt" required>
+      <button class="primary" type="submit">記録</button>
     </form>
   </section>
 
@@ -136,7 +181,7 @@ details.backup textarea{font:12px/1.4 ui-monospace,Menlo,monospace;color:var(--f
     <div class="list" id="rewards"></div>
     <form class="add" id="add-reward" hidden>
       <input class="n" id="rw-name" placeholder="例: 欲しかった本" maxlength="40" required>
-      <input class="p num" id="rw-pts" type="number" inputmode="numeric" min="1" max="99999" placeholder="pt" required>
+      <input class="p" id="rw-pts" type="number" inputmode="numeric" min="1" max="99999" placeholder="pt" required>
       <button class="primary" type="submit">追加</button>
     </form>
   </section>
@@ -144,7 +189,7 @@ details.backup textarea{font:12px/1.4 ui-monospace,Menlo,monospace;color:var(--f
   <section id="v-log" hidden>
     <div class="sec-head"><h2>りれき</h2></div>
     <p class="hint">間違えた記録は「取消」で消せます。</p>
-    <div class="list" id="log"></div>
+    <div id="log"></div>
     <details class="backup">
       <summary>バックアップ・機種変更</summary>
       <div class="inner">
@@ -156,6 +201,14 @@ details.backup textarea{font:12px/1.4 ui-monospace,Menlo,monospace;color:var(--f
     </details>
   </section>
 </div>
+
+<nav class="tabbar" role="tablist">
+  <div class="in">
+    <button role="tab" aria-selected="true" data-v="earn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>ためる</button>
+    <button role="tab" aria-selected="false" data-v="use"><svg viewBox="0 0 24 24"><rect x="3.5" y="8.5" width="17" height="12" rx="2"/><path d="M12 8.5v12M3.5 13h17M12 8.5C10.5 5 7 4.5 7 6.6S10 8.5 12 8.5zM12 8.5c1.5-3.5 5-4 5-1.9S14 8.5 12 8.5z"/></svg>つかう</button>
+    <button role="tab" aria-selected="false" data-v="log"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>りれき</button>
+  </div>
+</nav>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -183,74 +236,89 @@ details.backup textarea{font:12px/1.4 ui-monospace,Menlo,monospace;color:var(--f
   try { const raw = localStorage.getItem(KEY); data = raw ? clean(JSON.parse(raw)) : seed(); } catch (e) { data = seed(); }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) { toast('保存できませんでした（ストレージが使えません）'); } };
   save();
-  // ask the browser not to evict data
   try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (e) {}
 
-  const UI = { editEarn: false, editUse: false, confirmBuy: null, confirmDel: null };
+  const UI = { editEarn: false, editUse: false, confirmBuy: null, confirmDel: null, stampsOn: -1 };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  // 「（例）」は小さなラベルで表示
+  const nm = s => { const m = /^（例）(.*)$/.exec(s); return m ? '<span class="ex">例</span>' + esc(m[1]) : esc(s); };
   const balance = () => data.log.reduce((a, l) => a + (l.type === 'spend' ? -l.pts : l.pts), 0);
   let toastT;
   const toast = msg => { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 1800); };
+  const floatAt = (el, text) => {
+    const r = el.getBoundingClientRect(), f = document.createElement('div');
+    f.className = 'float'; f.textContent = text; f.style.left = (r.left + r.width / 2) + 'px'; f.style.top = (r.top - 8) + 'px';
+    document.body.appendChild(f); setTimeout(() => f.remove(), 900);
+  };
+  const bump = () => { const c = $('card'); c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); };
 
-  document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
-    document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', x === b));
+  const d0 = new Date();
+  $('date').textContent = (d0.getMonth() + 1) + '月' + d0.getDate() + '日（' + '日月火水木金土'[d0.getDay()] + '）';
+
+  document.querySelectorAll('nav.tabbar button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('nav.tabbar button').forEach(x => x.setAttribute('aria-selected', x === b));
     ['earn','use','log'].forEach(v => $('v-' + v).hidden = v !== b.dataset.v);
+    window.scrollTo({ top: 0 });
   }));
 
   function renderCard() {
     const bal = balance();
-    $('bal').innerHTML = bal.toLocaleString() + '<small>pt</small>';
+    $('bal').textContent = bal.toLocaleString();
     const today = new Date().toDateString();
     const t = data.log.filter(l => l.type === 'earn' && new Date(l.at).toDateString() === today).reduce((a, l) => a + l.pts, 0);
-    $('earnedToday').textContent = t ? '今日 +' + t + 'pt' : '';
+    $('earnedToday').hidden = !t; $('earnedToday').textContent = '今日 +' + t;
     const goal = data.rewards.filter(r => r.cost > bal).sort((a, b) => a.cost - b.cost)[0];
     let ratio = 0;
-    if (goal) { ratio = bal / goal.cost; $('next').textContent = '「' + goal.name + '」まで あと ' + (goal.cost - bal).toLocaleString() + 'pt'; }
+    if (goal) { ratio = bal / goal.cost; $('next').innerHTML = '<span>「' + esc(goal.name.replace(/^（例）/, '')) + '」まで あと</span><b class="num">' + (goal.cost - bal).toLocaleString() + '</b><span>pt</span>'; }
     else if (data.rewards.length) { ratio = 1; $('next').textContent = '登録したごほうびは全部交換できます'; }
     else $('next').textContent = 'ごほうびを登録すると、あと何ptか表示されます';
     const on = Math.max(0, Math.min(10, Math.floor(ratio * 10)));
-    $('stamps').innerHTML = Array.from({length: 10}, (_, i) => '<span class="stamp' + (i < on ? ' on' : '') + '"></span>').join('');
+    const prev = UI.stampsOn;
+    $('stamps').innerHTML = Array.from({length: 10}, (_, i) =>
+      '<span class="stamp' + (i < on ? ' on' : '') + (prev >= 0 && i < on && i >= prev ? ' pop' : '') + '"><svg><use href="#star"/></svg></span>').join('');
+    UI.stampsOn = on;
   }
 
   function renderTasks() {
     const el = $('tasks');
     if (!data.tasks.length) { el.innerHTML = '<div class="empty">「編集」から、ポイントがもらえる行動を登録しましょう</div>'; return; }
-    el.innerHTML = data.tasks.map(t => '<div class="row"><div class="main"><div class="name">' + esc(t.name) + '</div>' +
+    el.innerHTML = data.tasks.map(t => '<div class="row"><div class="main"><div class="name">' + nm(t.name) + '</div>' +
       (UI.editEarn ? '<div class="sub num">' + t.pts + 'pt</div>' : '') + '</div>' +
       (UI.editEarn ? '<button class="del" data-del-task="' + esc(t.id) + '">削除</button>'
-                   : '<button class="earn-btn num" data-earn="' + esc(t.id) + '">+' + t.pts + 'pt</button>') + '</div>').join('');
+                   : '<button class="earn-btn" data-earn="' + esc(t.id) + '">+' + t.pts + '<small>pt</small></button>') + '</div>').join('');
   }
 
   function renderRewards() {
     const el = $('rewards'), bal = balance();
     if (!data.rewards.length) { el.innerHTML = '<div class="empty">「編集」から、欲しいものと必要ポイントを登録しましょう</div>'; return; }
     el.innerHTML = [...data.rewards].sort((a, b) => a.cost - b.cost).map(r => {
-      const pct = Math.min(100, Math.max(0, bal / r.cost * 100));
+      const pct = Math.min(100, Math.max(0, bal / r.cost * 100)), ok = bal >= r.cost;
       let act;
       if (UI.editUse) act = '<button class="del" data-del-rw="' + esc(r.id) + '">削除</button>';
       else if (UI.confirmBuy === r.id) act = '<button class="cancel" data-cancel>やめる</button><button class="buy confirm" data-buy-ok="' + esc(r.id) + '">交換する</button>';
-      else act = '<button class="buy" data-buy="' + esc(r.id) + '"' + (bal < r.cost ? ' disabled' : '') + '>交換</button>';
-      return '<div class="row reward"><div class="main"><div class="name">' + esc(r.name) + '</div>' +
-        '<div class="sub num">' + r.cost.toLocaleString() + 'pt' + (bal < r.cost ? '・あと ' + (r.cost - bal).toLocaleString() + 'pt' : '') + '</div>' +
+      else act = '<button class="buy" data-buy="' + esc(r.id) + '"' + (ok ? '' : ' disabled') + '>交換</button>';
+      return '<div class="row reward' + (ok ? ' ready' : '') + '"><div class="main"><div class="name">' + nm(r.name) + '</div>' +
+        '<div class="sub"><span class="num">' + r.cost.toLocaleString() + 'pt</span>' + (ok ? '・交換できます' : '・あと <span class="num">' + (r.cost - bal).toLocaleString() + '</span>pt') + '</div>' +
         '<div class="bar"><i style="width:' + pct + '%"></i></div></div>' + act + '</div>';
     }).join('');
   }
 
   function renderLog() {
     const el = $('log');
-    if (!data.log.length) { el.innerHTML = '<div class="empty">まだ記録はありません</div>'; return; }
-    let lastDay = '', html = '';
+    if (!data.log.length) { el.innerHTML = '<div class="list"><div class="empty">まだ記録はありません</div></div>'; return; }
+    const groups = [];
     [...data.log].sort((a, b) => b.at - a.at).slice(0, 300).forEach(l => {
-      const d = new Date(l.at), day = (d.getMonth() + 1) + '/' + d.getDate() + '（' + '日月火水木金土'[d.getDay()] + '）';
-      if (day !== lastDay) { html += '<div class="day">' + day + '</div>'; lastDay = day; }
-      const tm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-      const sp = l.type === 'spend';
-      html += '<div class="row"><div class="main"><div class="name">' + esc(l.name) + '</div><div class="sub num">' + tm + (sp ? '・交換' : '') + '</div></div>' +
-        '<span class="pill num ' + (sp ? 'minus' : 'plus') + '">' + (sp ? '−' : '+') + l.pts + '</span>' +
+      const d = new Date(l.at), day = (d.getMonth() + 1) + '月' + d.getDate() + '日（' + '日月火水木金土'[d.getDay()] + '）';
+      if (!groups.length || groups[groups.length - 1].day !== day) groups.push({ day, items: [] });
+      groups[groups.length - 1].items.push(l);
+    });
+    el.innerHTML = groups.map(g => '<div class="day">' + g.day + '</div><div class="list">' + g.items.map(l => {
+      const d = new Date(l.at), tm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'), sp = l.type === 'spend';
+      return '<div class="row"><div class="main"><div class="name">' + nm(l.name) + '</div><div class="sub"><span class="num">' + tm + '</span>' + (sp ? '・交換' : '') + '</div></div>' +
+        '<span class="pill ' + (sp ? 'minus' : 'plus') + '">' + (sp ? '−' : '+') + l.pts + '</span>' +
         (UI.confirmDel === l.id ? '<button class="del" data-del-log-ok="' + esc(l.id) + '">消す</button><button class="cancel" data-cancel>戻す</button>'
                                 : '<button class="cancel" data-del-log="' + esc(l.id) + '">取消</button>') + '</div>';
-    });
-    el.innerHTML = html;
+    }).join('') + '</div>').join('');
   }
 
   function render() {
@@ -269,11 +337,11 @@ details.backup textarea{font:12px/1.4 ui-monospace,Menlo,monospace;color:var(--f
     const b = e.target.closest('button[data-earn],button[data-buy],button[data-buy-ok],button[data-cancel],button[data-del-log],button[data-del-log-ok],button[data-del-task],button[data-del-rw]');
     if (!b) return;
     const d = b.dataset;
-    if (d.earn) { const t = data.tasks.find(x => x.id === d.earn); if (!t) return; addLog('earn', t.name, t.pts); commit(); toast('+' + t.pts + 'pt'); }
+    if (d.earn) { const t = data.tasks.find(x => x.id === d.earn); if (!t) return; floatAt(b, '+' + t.pts); addLog('earn', t.name, t.pts); commit(); bump(); }
     else if (d.buy) { UI.confirmBuy = d.buy; render(); }
     else if (d.buyOk) { const r = data.rewards.find(x => x.id === d.buyOk); UI.confirmBuy = null;
       if (!r || balance() < r.cost) { toast('ポイントが足りません'); render(); return; }
-      addLog('spend', r.name, r.cost); commit(); toast('「' + r.name + '」と交換しました'); }
+      addLog('spend', r.name, r.cost); commit(); toast('「' + r.name.replace(/^（例）/, '') + '」と交換しました'); }
     else if (d.cancel !== undefined) { UI.confirmBuy = null; UI.confirmDel = null; render(); }
     else if (d.delLog) { UI.confirmDel = d.delLog; render(); }
     else if (d.delLogOk) { UI.confirmDel = null; data.log = data.log.filter(x => x.id !== d.delLogOk); commit(); toast('取り消しました'); }
@@ -289,9 +357,9 @@ details.backup textarea{font:12px/1.4 ui-monospace,Menlo,monospace;color:var(--f
   });
   onAdd('add-task', 'task-name', 'task-pts', (name, pts) => data.tasks.push({ id: uid(), name, pts, at: Date.now() }));
   onAdd('add-reward', 'rw-name', 'rw-pts', (name, cost) => data.rewards.push({ id: uid(), name, cost, at: Date.now() }));
-  onAdd('add-oneoff', 'one-name', 'one-pts', (name, pts) => { addLog('earn', name, pts); toast('+' + pts + 'pt'); });
+  onAdd('add-oneoff', 'one-name', 'one-pts', (name, pts) => { addLog('earn', name, pts); bump(); toast('+' + pts + 'pt'); });
 
-  // backup
+  // バックアップ
   const encode = () => btoa(unescape(encodeURIComponent(JSON.stringify(data))));
   $('bk-copy').onclick = async () => {
     const code = encode(); $('bk-text').value = code;
@@ -301,8 +369,7 @@ details.backup textarea{font:12px/1.4 ui-monospace,Menlo,monospace;color:var(--f
   let pending = null;
   $('bk-restore').onclick = () => {
     try {
-      const d = JSON.parse(decodeURIComponent(escape(atob($('bk-text').value.trim()))));
-      pending = clean(d);
+      pending = clean(JSON.parse(decodeURIComponent(escape(atob($('bk-text').value.trim())))));
       $('bk-restore-ok').hidden = false;
       toast('記録 ' + pending.log.length + '件のデータです。確認ボタンで上書きします');
     } catch (e) { pending = null; $('bk-restore-ok').hidden = true; toast('コードが読めませんでした。全部コピーできているか確認してください'); }

@@ -1,5 +1,5 @@
 // オフラインでも開けるようにするためのキャッシュ。ファイルを更新したら VERSION を上げる。
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CACHE = 'gohoubi-' + VERSION;
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable.png', 'apple-touch-icon.png'];
 
